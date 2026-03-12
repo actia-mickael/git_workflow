@@ -145,7 +145,7 @@ class InteractiveUI:
             questionary.Choice(
                 title=f"{repo.name} ({repo})",
                 value=repo,
-                checked=True  # Pré-sélectionné
+                checked=False  # Pré-sélectionné
             )
             for repo in repos
         ]

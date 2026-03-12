@@ -2,8 +2,8 @@
 # ===================================
 
 scan:
-  root_directory: "/mnt/c/DEV"
-  max_depth: 5
+  root_directory: "/mnt/c/DEV/PROJECTS"
+  max_depth: 3
   exclude_patterns:
     - "node_modules"
     - "__pycache__"
