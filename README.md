@@ -1,6 +1,8 @@
 # Git Workflow
 
-Un outil Python pour automatiser et monitorer les workflows Git avec génération automatique et intelligence du README.md intégrée.
+Un outil Python pour automatiser et monitorer les workflows Git avec génération automatique et intelligente du README.md intégrée.
+Pheure de declenchement automatique du workflow parametrable.
+Repertoire et profondeur de scan parametrable.
 
 ## Description
 
