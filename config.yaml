@@ -1,0 +1,40 @@
+# Git Workflow Manager Configuration
+# ===================================
+
+scan:
+  root_directory: "/mnt/c/DEV"
+  max_depth: 5
+  exclude_patterns:
+    - "node_modules"
+    - "__pycache__"
+    - ".venv"
+    - "vendor"
+    - ".git"
+    - "hf_space"          # ← Ajouter
+    - "huggingface"       # ← Ajouter
+
+tracking:
+  auto_add_new_repos: false
+  known_repos_file: "data/known_repos.json"
+
+llm:
+  provider: "claude"
+  claude:
+    model: "claude-sonnet-4-20250514"
+    max_tokens: 2048
+  ollama:
+    model: "mistral:7b"
+    base_url: "http://localhost:11434"
+
+git:
+  default_branch: "main"
+  commit_style: "conventional"  # conventional | simple
+  auto_push: false
+
+readme:
+  auto_generate: true
+  update_existing: false        # true = met à jour, false = seulement si absent
+
+logging:
+  level: "INFO"
+  file: "data/logs/workflow.log"
