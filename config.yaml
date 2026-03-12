@@ -2,8 +2,8 @@
 # ===================================
 
 scan:
-  root_directory: "/mnt/c/DEV/PROJECTS"
-  max_depth: 3
+  root_directory: "/mnt/c/DEV"
+  max_depth: 5
   exclude_patterns:
     - "node_modules"
     - "__pycache__"
@@ -18,7 +18,7 @@ tracking:
   known_repos_file: "data/known_repos.json"
 
 llm:
-  provider: "claude"
+  provider: "ollama"  # claude | ollama au choix, Ollama utilisation sans comsommation de token, mais nécessite une instance locale
   claude:
     model: "claude-sonnet-4-20250514"
     max_tokens: 2048
