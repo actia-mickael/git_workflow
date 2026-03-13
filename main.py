@@ -3,6 +3,7 @@ Git Workflow Manager - Orchestrateur principal.
 Point d'entrée du programme.
 """
 
+import argparse
 import logging
 import sys
 from datetime import datetime
@@ -59,6 +60,16 @@ def load_config(config_path: str = "config.yaml") -> dict:
 def main():
     """Point d'entrée principal."""
     
+    # Arguments CLI
+    parser = argparse.ArgumentParser(description="Git Workflow Manager")
+    parser.add_argument(
+        "--auto", 
+        action="store_true", 
+        help="Mode automatique (non-interactif)"
+    )
+    args = parser.parse_args()
+    auto_mode = args.auto
+    
     # Chargement config
     try:
         config = load_config()
@@ -68,7 +79,7 @@ def main():
     
     setup_logging(config)
     logger = logging.getLogger(__name__)
-    logger.info("Démarrage Git Workflow Manager")
+    logger.info(f"Démarrage Git Workflow Manager (auto={auto_mode})")
     
     # Initialisation des composants
     ui = InteractiveUI()
@@ -86,7 +97,8 @@ def main():
     git_ops = GitOperations(config, llm_provider) if llm_provider else None
     
     # Interface
-    ui.clear_screen()
+    if not auto_mode:
+        ui.clear_screen()
     ui.print_header()
     
     # ═══════════════════════════════════════════════════════════════
@@ -106,17 +118,25 @@ def main():
     if new_repos:
         ui.display_new_repos(new_repos)
         
-        selected_new = ui.select_new_repos_to_track(new_repos)
-        
-        for repo_path in selected_new:
-            scanner.add_to_tracking(repo_path)
-            tracked_repos.append(repo_path)
-            ui.print_success(f"Ajouté: {repo_path.name}")
-        
-        # Ignorer les non-sélectionnés
-        ignored = set(new_repos) - set(selected_new)
-        for repo_path in ignored:
-            scanner.ignore_repo(repo_path)
+        if auto_mode:
+            # Mode auto : ajouter tous les nouveaux repos
+            selected_new = new_repos
+            for repo_path in selected_new:
+                scanner.add_to_tracking(repo_path)
+                tracked_repos.append(repo_path)
+                ui.print_success(f"Ajouté (auto): {repo_path.name}")
+        else:
+            selected_new = ui.select_new_repos_to_track(new_repos)
+            
+            for repo_path in selected_new:
+                scanner.add_to_tracking(repo_path)
+                tracked_repos.append(repo_path)
+                ui.print_success(f"Ajouté: {repo_path.name}")
+            
+            # Ignorer les non-sélectionnés
+            ignored = set(new_repos) - set(selected_new)
+            for repo_path in ignored:
+                scanner.ignore_repo(repo_path)
     
     # ═══════════════════════════════════════════════════════════════
     # ÉTAPE 2 : Analyse des repos suivis
@@ -142,7 +162,13 @@ def main():
     # ÉTAPE 3 : Sélection des repos à push
     # ═══════════════════════════════════════════════════════════════
     
-    repos_to_push = ui.select_repos_to_push(repos_info)
+    if auto_mode:
+        # Mode auto : pusher tous les repos modifiés
+        repos_to_push = [r for r in repos_info if r.is_actionable]
+        if repos_to_push:
+            ui.print_info(f"Mode auto: {len(repos_to_push)} repo(s) à traiter")
+    else:
+        repos_to_push = ui.select_repos_to_push(repos_info)
     
     if not repos_to_push:
         ui.print_info("Aucun repo sélectionné pour push.")
@@ -155,7 +181,16 @@ def main():
     
     repos_for_readme = []
     if git_ops and config.get("readme", {}).get("auto_generate", True):
-        repos_for_readme = ui.select_readme_generation(repos_to_push)
+        if auto_mode:
+            # Mode auto : générer README seulement si absent
+            repos_for_readme = [
+                r for r in repos_to_push 
+                if not (r.path / "README.md").exists()
+            ]
+            if repos_for_readme:
+                ui.print_info(f"Mode auto: {len(repos_for_readme)} README à générer")
+        else:
+            repos_for_readme = ui.select_readme_generation(repos_to_push)
     
     # ═══════════════════════════════════════════════════════════════
     # ÉTAPE 5 : Confirmation
@@ -166,10 +201,13 @@ def main():
     ui.console.print(f"  • {len(repos_to_push)} repo(s) à commit/push")
     ui.console.print(f"  • {len(repos_for_readme)} README à générer")
     
-    if not ui.confirm_action("Procéder aux opérations?"):
-        ui.print_info("Opération annulée.")
-        ui.goodbye()
-        return
+    if not auto_mode:
+        if not ui.confirm_action("Procéder aux opérations?"):
+            ui.print_info("Opération annulée.")
+            ui.goodbye()
+            return
+    else:
+        ui.print_info("Mode auto: exécution sans confirmation")
     
     # ═══════════════════════════════════════════════════════════════
     # ÉTAPE 6 : Exécution

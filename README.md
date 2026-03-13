@@ -1,108 +1,97 @@
-# Git Workflow
+ # Git Workflow
 
-Un outil Python pour automatiser et monitorer les workflows Git avec génération automatique et intelligente du README.md intégrée.
-Pheure de declenchement automatique du workflow parametrable.
-Repertoire et profondeur de scan parametrable.
+A Python-based tool to automate and monitor Git workflows.
 
 ## Description
 
-Git Workflow est un système de gestion et de surveillance automatisé pour les dépôts Git. Il combine des opérations Git avancées avec des capacités d'IA (Claude) pour optimiser les flux de travail de développement, surveiller les changements et fournir des insights intelligents sur vos projets.
+Git Workflow is an automated system for managing and monitoring Git repositories. It combines advanced Git operations with AI capabilities (Claude or Mistral 7B, which needs to be installed locally under Ollama) to optimize development workflows, track changes, and provide intelligent insights on your projects.
 
-## Fonctionnalités
+## Features
 
-- 🔍 **Scanner automatique** de dépôts Git
-- 📊 **Monitoring en temps réel** des changements
-- 🤖 **Intégration IA** avec Claude pour l'analyse de code
-- 📝 **Logging détaillé** des opérations
-- 🎯 **Mode interactif** pour la gestion manuelle
-- 📋 **Suivi des dépôts connus** avec persistence des données
+- 🔍 **Automatic Scanner** for Git repositories
+- 📊 **Real-time Monitoring** of changes
+- 🤖 **AI Integration** with Claude for code analysis
+- 📝 **Detailed Logging** of operations
+- 🎯 **Interactive Mode** for manual management
+- 📋 **Tracking of known repositories** with data persistence
 
 ## Installation
 
-1. **Cloner le repository**
+1. **Clone the repository**
 ```bash
 git clone <repository-url>
 cd git_workflow
 ```
 
-2. **Installer les dépendances**
+2. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
 3. **Configuration**
-```bash
-# Copier et configurer le fichier d'environnement
-cp .env.example .env
 
-# Éditer config.yaml selon vos besoins
-```
-
-4. **Configuration des variables d'environnement**
-Créer un fichier `.env` avec:
-```env
-CLAUDE_API_KEY=your_claude_api_key_here
-```
-
-Consulter `install&setup.md` pour des instructions détaillées.
+    - **Environment Variables**
+        - Set up environment variables according to your AI provider (Claude or Ollama).
+    - **Configuration file**
+        - Modify the `config.yaml` file to set up your Git workflow preferences.
 
 ## Usage
 
-### Lancement principal
+- **Run the main script**
 ```bash
 python main.py
 ```
 
-### Mode interactif
+## Structure
+
+The project has the following structure:
+
 ```bash
-python -c "from core.interactive import run_interactive; run_interactive()"
-```
-
-### Surveillance des dépôts
-```bash
-python -c "from core.monitor import start_monitoring; start_monitoring()"
-```
-
-## Structure du projet
-
-```
 git_workflow/
-├── core/                    # Modules principaux
-│   ├── git_operations.py    # Opérations Git
-│   ├── interactive.py       # Interface interactive
-│   ├── monitor.py          # Surveillance des dépôts
-│   └── scanner.py          # Scanner de dépôts
-├── data/                   # Données et logs
-│   ├── logs/              # Fichiers de log
-│   └── known_repos.json  # Base de données des dépôts
-├── llm/                   # Intégration IA
-│   ├── base.py           # Interface de base
-│   └── claude_provider.py # Provider Claude
-├── models/               # Modèles de données
-│   └── repo.py          # Modèle Repository
-├── config.yaml          # Configuration principale
-└── main.py              # Point d'entrée
+├── core/
+│   ├── git_operations.py
+│   ├── interactive.py
+│   ├── monitor.py
+│   └── scanner.py
+├── data/
+│   ├── logs/
+│   │   └── workflow.log
+│   └── known_repos.json
+├── llm/
+│   ├── base.py
+│   ├── claude_provider.py
+│   └── ollama_provider.py
+├── models/
+│   └── repo.py
+├── .env
+├── .gitignore
+├── README.md
+├── config.yaml
+├── install&setup.md
+├── main.py
+├── requirements.txt
+└── setup_cron.py
 ```
 
-## Configuration
+## Main Files
 
-Le fichier `config.yaml` permet de personnaliser:
-- Paramètres de surveillance
-- Configuration des providers IA
-- Paramètres de logging
-- Chemins des dépôts à surveiller
+- `.env`
+- `.gitignore`
+- `config.yaml`
+- `install&setup.md`
+- `main.py`
+- `README.md`
+- `requirements.txt`
+- `setup_cron.py`
+- `core/git_operations.py`
+- `core/interactive.py`
+- `core/monitor.py`
+- `core/scanner.py`
+- `data/known_repos.json`
+- `llm/base.py`
+- `llm/claude_provider.py`
+- `llm/ollama_provider.py`
+- `models/repo.py`
+- `data/logs/workflow.log`
 
-## Prérequis
-
-- Python 3.8+
-- Git installé sur le système
-- Clé API Claude (optionnel)
-- Accès en lecture/écriture aux dépôts Git
-
-## Contributions
-
-Les contributions sont les bienvenues ! Veuillez consulter les guidelines de contribution avant de soumettre une pull request.
-
-## Licence
-
-Ce projet est sous licence [MIT](LICENSE).
+For more information about installation, usage, and configuration, please refer to the `install&setup.md` file.
