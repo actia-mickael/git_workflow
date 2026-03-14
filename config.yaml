@@ -8,7 +8,9 @@ scan:
     - "/home/mmo/repos"
     - "/mnt/c/DEV/JEDHA/FULLSTACK_WSL"
     - "/mnt/c/DEV/JEDHA/lead"
-  max_depth: 4 
+  max_depth: 3
+  scan_nested_repos: true    # ← AJOUTER : scanner les repos imbriqués
+
   exclude_patterns:
     - "node_modules"
     - "__pycache__"

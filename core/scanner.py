@@ -28,6 +28,7 @@ class RepoScanner:
         
         self.max_depth = scan_config.get("max_depth", 3)
         self.exclude_patterns = scan_config.get("exclude_patterns", [])
+        self.scan_nested_repos = scan_config.get("scan_nested_repos", False)
         self.known_repos_file = Path(config["tracking"]["known_repos_file"])
         self._known_repos: Optional[dict[str, KnownRepo]] = None
 
@@ -110,7 +111,8 @@ class RepoScanner:
                 git_dir = path / ".git"
                 if git_dir.is_dir():
                     repos.append(path)
-                    return  # Ne pas scanner les sous-dossiers d'un repo
+                    if not self.scan_nested_repos:
+                        return  # Scanner les sous-dossiers d'un repo
 
                 for child in path.iterdir():
                     if child.is_dir() and not child.name.startswith("."):
