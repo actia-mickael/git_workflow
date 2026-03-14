@@ -45,3 +45,7 @@ readme:
 logging:
   level: "INFO"
   file: "data/logs/workflow.log"
+
+schedule:
+  enabled: true
+  time: "23:30"
