@@ -19,9 +19,15 @@ class RepoScanner:
     """Scanne un répertoire pour trouver les repos Git."""
 
     def __init__(self, config: dict):
-        self.root_dir = Path(config["scan"]["root_directory"]).expanduser()
-        self.max_depth = config["scan"].get("max_depth", 3)
-        self.exclude_patterns = config["scan"].get("exclude_patterns", [])
+        # Support root_directories (liste) ou root_directory (string)
+        scan_config = config["scan"]
+        if "root_directories" in scan_config:
+            self.root_dirs = [Path(p).expanduser() for p in scan_config["root_directories"]]
+        else:
+            self.root_dirs = [Path(scan_config["root_directory"]).expanduser()]
+        
+        self.max_depth = scan_config.get("max_depth", 3)
+        self.exclude_patterns = scan_config.get("exclude_patterns", [])
         self.known_repos_file = Path(config["tracking"]["known_repos_file"])
         self._known_repos: Optional[dict[str, KnownRepo]] = None
 
@@ -87,22 +93,16 @@ class RepoScanner:
     def scan_all_repos(self) -> list[Path]:
         """
         Scanne récursivement pour trouver tous les repos Git.
-        
+
         Returns:
             Liste des chemins vers les repos (dossier parent de .git)
         """
         repos = []
-        
-        if not self.root_dir.exists():
-            logger.error(f"Répertoire racine inexistant: {self.root_dir}")
-            return repos
-
-        logger.info(f"Scan de {self.root_dir} (profondeur max: {self.max_depth})")
 
         def scan_recursive(path: Path, depth: int) -> None:
             if depth > self.max_depth:
                 return
-            
+
             if self._should_exclude(path):
                 return
 
@@ -111,17 +111,26 @@ class RepoScanner:
                 if git_dir.is_dir():
                     repos.append(path)
                     return  # Ne pas scanner les sous-dossiers d'un repo
-                
+
                 for child in path.iterdir():
                     if child.is_dir() and not child.name.startswith("."):
                         scan_recursive(child, depth + 1)
-                        
+
             except PermissionError:
                 logger.warning(f"Permission refusée: {path}")
 
-        scan_recursive(self.root_dir, 0)
-        logger.info(f"{len(repos)} repos trouvés")
-        
+        for root_dir in self.root_dirs:
+            if not root_dir.exists():
+                logger.warning(f"Répertoire racine inexistant: {root_dir}")
+                continue
+            
+            logger.info(f"Scan de {root_dir} (profondeur max: {self.max_depth})")
+            scan_recursive(root_dir, 0)
+
+        # Dédupliquer (au cas où des répertoires se chevauchent)
+        repos = list(dict.fromkeys(repos))
+        logger.info(f"{len(repos)} repos trouvés au total")
+
         return repos
 
     def find_new_repos(self) -> list[Path]:

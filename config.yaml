@@ -2,8 +2,13 @@
 # ===================================
 
 scan:
-  root_directory: "/mnt/c/DEV"
-  max_depth: 4
+  root_directories:
+    - "/mnt/c/DEV"
+    - "/mnt/c/DEV/PROJECTS"
+    - "/home/mmo/repos"
+    - "/mnt/c/DEV/JEDHA/FULLSTACK_WSL"
+    - "/mnt/c/DEV/JEDHA/lead"
+  max_depth: 4 
   exclude_patterns:
     - "node_modules"
     - "__pycache__"
