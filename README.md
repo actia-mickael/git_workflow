@@ -1,10 +1,58 @@
  # Git Workflow
 
-A Python-based tool for automating and monitoring Git workflows.
+A comprehensive and intelligent Python-based tool for automating and monitoring Git workflows.
 
 ## Description
 
 Git Workflow is an automated system for managing and monitoring Git repositories. It combines advanced Git operations with AI capabilities (Claude or Mistral 7B, which needs to be installed locally under Ollama) to optimize development workflows, track changes, and provide intelligent insights on your projects.
+
+This tool offers the following features:
+
+- Advanced Git operations
+- AI capabilities for intelligent insights
+- Repository monitoring
+- Logging and notifications
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/your-username/git_workflow.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd git_workflow
+```
+
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Configure the environment:
+
+```bash
+cp .env.example .env
+# Edit .env file as needed
+```
+
+5. Set up the project:
+
+```bash
+./setup.sh
+```
+
+## Usage
+
+To start the Git Workflow, run the main script:
+
+```bash
+python main.py
+```
 
 ## Structure
 
@@ -17,6 +65,7 @@ git_workflow
 │   └── scanner.py
 ├── data
 │   ├── logs
+│   │   ├── cron.log
 │   │   └── workflow.log
 │   └── known_repos.json
 ├── llm
@@ -37,58 +86,48 @@ git_workflow
 
 ## Principal Files
 
-`.env`
+`.env`: Project environment variables
 
-`.gitignore`
+`.gitignore`: File to ignore specific files for Git
 
-`config.yaml`
+`config.yaml`: Configuration file for the project
 
-`install&setup.md`
+`install&setup.md`: Guide for installation and setup of the project
 
-`main.py`
+`main.py`: Main script for running the Git Workflow
 
-`README.md`
+`README.md`: This documentation
 
-`requirements.txt`
+`requirements.txt`: List of required Python packages
 
-`setup_cron.py`
+`setup_cron.py`: Script for setting up a cron job for the Git Workflow
 
-`core/git_operations.py`
+`core/git_operations.py`: Script for advanced Git operations
 
-`core/interactive.py`
+`core/interactive.py`: Interactive Git operations
 
-`core/monitor.py`
+`core/monitor.py`: Repository monitoring functions
 
-`core/scanner.py`
+`core/notifier.py`: Notification functions
 
-`data/known_repos.json`
+`core/scanner.py`: AI-powered repository scanning functions
 
-`llm/base.py`
+`data/known_repos.json`: List of known repositories
 
-`llm/claude_provider.py`
+`data/logs/cron.log`: Cron job logs
 
-`llm/ollama_provider.py`
+`data/logs/workflow.log`: Workflow logs
 
-`models/repo.py`
+`llm/base.py`: Base class for AI providers
 
-`data/logs/workflow.log`
+`llm/claude_provider.py`: Claude AI provider
 
-## Installation
+`llm/ollama_provider.py`: Ollama AI provider
 
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd git_workflow
-```
+`models/repo.py`: Repository model class
 
-2. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
+---
 
-3. **Configuration**
+**Note:** This tool utilizes the following languages: JSON, Markdown, Python, and YAML.
 
-    - **Environment Variables**
-        - Set up environment variables according to your AI provider.
-
-Refer to the `install&setup.md` file for more detailed instructions.
+**Additional Note:** The AI capabilities (Claude or Mistral 7B) need to be installed locally under Ollama.

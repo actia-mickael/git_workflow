@@ -17,6 +17,7 @@ from core.monitor import GitMonitor
 from core.git_operations import GitOperations
 from core.interactive import InteractiveUI
 from llm.base import get_provider
+from core.notifier import send_windows_notification, write_summary_log
 
 
 # Chargement variables d'environnement
@@ -222,6 +223,8 @@ def main():
     
     success_count = 0
     failed_count = 0
+    success_repos = []
+    failed_repos = []
     
     for repo_info in repos_to_push:
         ui.console.print()
@@ -247,8 +250,10 @@ def main():
         
         if result.get("pushed"):
             success_count += 1
+            success_repos.append(repo_info.name)
         else:
             failed_count += 1
+            failed_repos.append(repo_info.name)
     
     # ═══════════════════════════════════════════════════════════════
     # RÉSUMÉ
@@ -259,7 +264,18 @@ def main():
         success=success_count,
         failed=failed_count
     )
-    
+
+    # Écrire le résumé dans les logs
+    log_dir = Path(config.get("logging", {}).get("file", "data/logs/workflow.log")).parent
+    write_summary_log(success_repos, failed_repos, log_dir)
+
+    # Notification Windows (mode auto uniquement)
+    if auto_mode and (success_repos or failed_repos):
+        msg = f"✅ {len(success_repos)} push"
+        if failed_repos:
+            msg += f" | ❌ {len(failed_repos)} échec(s)"
+        send_windows_notification("Git Workflow", msg)
+
     logger.info(f"Terminé: {success_count} succès, {failed_count} échecs")
     ui.goodbye()
 
