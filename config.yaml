@@ -48,4 +48,4 @@ logging:
 
 schedule:
   enabled: true
-  time: "23:50"  # Format HH:MM (24h)
+  time: "18:00"  # Format HH:MM (24h)
