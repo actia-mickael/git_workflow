@@ -1,6 +1,5 @@
 # Git Workflow Manager Configuration
 # ===================================
-
 scan:
   root_directories:
     - "/mnt/c/DEV"
