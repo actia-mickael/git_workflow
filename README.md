@@ -2,6 +2,7 @@
 
 A comprehensive and intelligent Python-based tool for automating and monitoring Git workflows.
 
+
 ## Description
 
 Git Workflow is an automated system for managing and monitoring Git repositories. It combines advanced Git operations with AI capabilities (Claude or Mistral 7B, which needs to be installed locally under Ollama) to optimize development workflows, track changes, and provide intelligent insights on your projects.
